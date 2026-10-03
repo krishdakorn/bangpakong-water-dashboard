@@ -128,16 +128,19 @@
 					document.getElementById('remaining-level').innerText = data.remaining;
 					document.getElementById('update-time').innerText = "อัปเดตล่าสุด: " + data.updated_at;
 
+					const badge = document.getElementById('status-badge');
+					const remDesc = document.getElementById('remaining-desc');
+
 					if (parseFloat(data.remaining) <= 0.5) {
-						document.getElementById('status-badgeclassName = "inline-flex items-center px-3 py-1 rounded-lg text-lg font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30";
-						document.getElementById('status-badge').innerText = "⚠️ ใกล้ล้นตลิ่ง";
-						document.getElementById('remaining-desc').className = "mt-2 text-xs text-rose-400 flex items-center";
-						document.getElementById('remaining-desc').innerText = "🚨 ต้องเฝ้าระวังระดับน้ำ";
+						badge.className = "inline-flex items-center px-3 py-1 rounded-lg text-lg font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30";
+						badge.innerText = "⚠️ ใกล้ล้นตลิ่ง";
+						remDesc.className = "mt-2 text-xs text-rose-400 flex items-center";
+						remDesc.innerText = "🚨 ต้องเฝ้าระวังระดับน้ำ";
 					} else {
-						document.getElementById('status-badge').className = "inline-flex items-center px-3 py-1 rounded-lg text-lg font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
-						document.getElementById('status-badge').innerText = "✅ ปกติ";
-						document.getElementById('remaining-desc').className = "mt-2 text-xs text-emerald-400 flex items-center";
-						document.getElementById('remaining-desc').innerText = "✅ อยู่ในเกณฑ์ปลอดภัย";
+						badge.className = "inline-flex items-center px-3 py-1 rounded-lg text-lg font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+						badge.innerText = "✅ ปกติ";
+						remDesc.className = "mt-2 text-xs text-emerald-400 flex items-center";
+						remDesc.innerText = "✅ อยู่ในเกณฑ์ปลอดภัย";
 					}
 
 					// อัปเดตกราฟเส้นแนวโน้ม
