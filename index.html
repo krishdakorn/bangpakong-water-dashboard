@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="th">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Dashboard ระดับน้ำสถานีบางปะกงแบบเรียลไทม์</title>
+		<!-- Tailwind CSS สำหรับตกแต่ง UI -->
+		<script src="https://cdn.tailwindcss.com"></script>
+	</head>
+	<body class="bg-slate-50 font-sans text-slate-800">
+		<div class="max-w-4xl mx-auto p-6 min-h-screen flex flex-col justify-between">
+			<!-- Header -->
+			<header class="bg-white shadow rounded-2xl p-6 mb-6 flex justify-between items-center">
+				<div>
+					<h1 class="text-2xl font-bold text-blue-600">💧 ระบบติดตามระดับน้ำ</h1>
+					<p class="text-sm text-slate-500">สถานีบางปะกง - คลังข้อมูลน้ำแห่งชาติ</p>
+				</div>
+				<div id="update-time" class="text-xs text-slate-400 bg-slate-100 px-3 py-1 rounded-full">
+					กำลังโหลดข้อมูล...
+				</div>
+			</header>
+
+			<!-- Main Dashboard Card -->
+			<main class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+				<!-- ระดับน้ำปัจจุบัน -->
+				<div class="bg-white shadow rounded-2xl p-6 flex flex-col justify-between border-l-4 border-blue-500">
+					<div>
+						<h2 class="text-sm font-semibold text-slate-400 uppercase">ระดับน้ำปัจจุบัน</h2>
+						<div class="text-4xl font-ext500 mt-2 text-slate-700">
+							<span id="water-level">--</span> <span class="text-lg font-normal">เมตร (M.MSL)</span>
+						</div>
+					</div>
+					<div class="mt-4 text-xs text-slate-400">อัปเดตตรงจากคลังข้อมูลน้ำ</div>
+				</div>
+
+				<!-- สถานะตลิ่ง -->
+				<div id="status-card" class="bg-white shadow rounded-2xl p-6 flex flex-col justify-between border-l-4 border-emerald-500">
+					<div>
+						<h2 class="text-sm font-semibold text-slate-400 uppercase">สถานะความเสี่ยง</h2>
+						<div id="status-text" class="text-2xl font-bold mt-3 text-emerald-600">
+							กำลังตรวจสอบ...
+						</div>
+					</div>
+					<div id="bank-info" class="mt-4 text-xs text-slate-500">ระดับตลิ่ง: -- เมตร</div>
+				</div>
+			</main>
+
+			<!-- ข้อมูลเพิ่มเติม / แจ้งเตือน -->
+			<section class="bg-blue-50 border border-blue-200 rounded-2xl p-4 text-sm text-blue-800 mb-6">
+				ℹ️ ระบบมีการส่งอีเมลแจ้งเตือนอัตโนมัติไปยังรายชื่อใน Google Sheets ทุกๆ 15 นาที หากระดับน้ำใกล้เข้าขั้นวิกฤตหรือล้นตลิ่ง
+			</section>
+
+			<!-- Footer -->
+			<footer class="text-center text-xs text-slate-400 py-4">
+				Powered by GitHub, Vercel & Google Apps Script
+			</footer>
+		</div>
+
+		<script>
+			async function fetchWaterData() {
+				try {
+					// หมายเหตุ: คุณสามารถดึงข้อมูลจาก Web App URL ของ Apps Script ที่คุณ Deploy ไว้ หรือดึงตรงจาก API ThaiWater 
+					// (ในที่นี้จำลองการเรียกใช้งานหรือเชื่อมต่อผ่าน Apps Script Web App ของคุณเองเพื่อความปลอดภัยเรื่อง CORS)
+					
+					// const response = await fetch('URL_WEB_APP_GOOGLE_APPS_SCRIPT_ของคุณ');
+					// const data = await response.json();
+
+					// ข้อมูลจำลอง (Mock Data) สำหรับแสดงผลเบื้องต้น
+					document.getElementById('water-level').innerText = "2.45";
+					document.getElementById('bank-info').innerText = "ระดับตลิ่ง: 2.80 เมตร";
+					document.getElementById('status-text').innerText = "ปกติ (ปลอดภัย)";
+					document.getElementById('update-time').innerText = "อัปเดตล่าสุด: " + new Date().toLocaleTimeString();
+					
+				} catch (error) {
+					console.error("Failed to fetch data", error);
+				}
+			}
+
+			// โหลดข้อมูลตอนเปิดเว็บ และรีเฟรชทุก 1 ปี / 15 นาที
+			fetchWaterData();
+			setInterval(fetchWaterData, 900000); // 15 นาที
+		</script>
+	</body>
+</html>
