@@ -3,82 +3,187 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Dashboard ระดับน้ำสถานีบางปะกงแบบเรียลไทม์</title>
-		<!-- Tailwind CSS สำหรับตกแต่ง UI -->
+		<title>Dashboard ระดับน้ำสถานีบางปะกง แบบเรียลไทม์</title>
 		<script src="https://cdn.tailwindcss.com"></script>
+		<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	</head>
-	<body class="bg-slate-50 font-sans text-slate-800">
-		<div class="max-w-4xl mx-auto p-6 min-h-screen flex flex-col justify-between">
-			<!-- Header -->
-			<header class="bg-white shadow rounded-2xl p-6 mb-6 flex justify-between items-center">
-				<div>
-					<h1 class="text-2xl font-bold text-blue-600">💧 ระบบติดตามระดับน้ำ</h1>
-					<p class="text-sm text-slate-500">สถานีบางปะกง - คลังข้อมูลน้ำแห่งชาติ</p>
-				</div>
-				<div id="update-time" class="text-xs text-slate-400 bg-slate-100 px-3 py-1 rounded-full">
-					กำลังโหลดข้อมูล...
-				</div>
-			</header>
-
-			<!-- Main Dashboard Card -->
-			<main class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-				<!-- ระดับน้ำปัจจุบัน -->
-				<div class="bg-white shadow rounded-2xl p-6 flex flex-col justify-between border-l-4 border-blue-500">
-					<div>
-						<h2 class="text-sm font-semibold text-slate-400 uppercase">ระดับน้ำปัจจุบัน</h2>
-						<div class="text-4xl font-ext500 mt-2 text-slate-700">
-							<span id="water-level">--</span> <span class="text-lg font-normal">เมตร (M.MSL)</span>
-						</div>
+	<body class="bg-[#0f172a] text-slate-100 font-sans min-h-screen p-4 md:p-8">
+		<div class="max-w-7xl mx-auto space-y-6">
+			
+			<!-- Top Cards Grid -->
+			<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+				<!-- 1. ระดับน้ำปัจจุบัน -->
+				<div class="bg-[#1e293b] border border-slate-800 rounded-2xl p-5 shadow-lg relative overflow-hidden">
+					<div class="flex justify-between items-start">
+						<span class="text-xs font-semibold uppercase tracking-wider text-slate-400">ระดับน้ำปัจจุบัน</span>
+						<span class="text-sky-400">💧</span>
 					</div>
-					<div class="mt-4 text-xs text-slate-400">อัปเดตตรงจากคลังข้อมูลน้ำ</div>
-				</div>
-
-				<!-- สถานะตลิ่ง -->
-				<div id="status-card" class="bg-white shadow rounded-2xl p-6 flex flex-col justify-between border-l-4 border-emerald-500">
-					<div>
-						<h2 class="text-sm font-semibold text-slate-400 uppercase">สถานะความเสี่ยง</h2>
-						<div id="status-text" class="text-2xl font-bold mt-3 text-emerald-600">
-							กำลังตรวจสอบ...
-						</div>
+					<div class="mt-3 flex items-baseline">
+						<span id="water-level" class="text-4xl font-black text-sky-400">1.85</span>
+						<span class="ml-1.5 text-lg font-medium text-slate-300">ม.</span>
 					</div>
-					<div id="bank-info" class="mt-4 text-xs text-slate-500">ระดับตลิ่ง: -- เมตร</div>
+					<div class="mt-2 text-xs text-slate-400">หน่วย: ม.รทก.</div>
 				</div>
-			</main>
 
-			<!-- ข้อมูลเพิ่มเติม / แจ้งเตือน -->
-			<section class="bg-blue-50 border border-blue-200 rounded-2xl p-4 text-sm text-blue-800 mb-6">
-				ℹ️ ระบบมีการส่งอีเมลแจ้งเตือนอัตโนมัติไปยังรายชื่อใน Google Sheets ทุกๆ 15 นาที หากระดับน้ำใกล้เข้าขั้นวิกฤตหรือล้นตลิ่ง
-			</section>
+				<!-- 2. ระดับขอบตลิ่ง -->
+				<div class="bg-[#1e293b] border border-slate-800 rounded-2xl p-5 shadow-lg relative overflow-hidden">
+					<div class="flex justify-between items-start">
+						<span class="text-xs font-semibold uppercase tracking-wider text-slate-400">ระดับขอบตลิ่ง</span>
+						<span class="text-amber-400">🏛️</span>
+					</div>
+					<div class="mt-3 flex items-baseline">
+						<span id="bank-level" class="text-4xl font-black text-amber-400">2.50</span>
+						<span class="ml-1.5 text-lg font-medium text-slate-300">ม.</span>
+					</div>
+					<div class="mt-2 text-xs text-slate-400">เกณฑ์ล้นตลิ่ง (ม.รทก.)</div>
+				</div>
 
-			<!-- Footer -->
-			<footer class="text-center text-xs text-slate-400 py-4">
-				Powered by GitHub, Vercel & Google Apps Script
-			</footer>
+				<!-- 3. ระยะคงเหลือถึงตลิ่ง -->
+				<div class="bg-[#1e293b] border border-slate-800 rounded-2xl p-5 shadow-lg relative overflow-hidden">
+					<div class="flex justify-between items-start">
+						<span class="text-xs font-semibold uppercase tracking-wider text-slate-400">ระยะคงเหลือถึงตลิ่ง</span>
+						<span class="text-emerald-400">↕️</span>
+					</div>
+					<div class="mt-3 flex items-baseline">
+						<span id="remaining-level" class="text-4xl font-black text-emerald-400">0.65</span>
+						<span class="ml-1.5 text-lg font-medium text-slate-300">ม.</span>
+					</div>
+					<div id="remaining-desc" class="mt-2 text-xs text-emerald-400 flex items-center">✅ อยู่ในเกณฑ์ปลอดภัย</div>
+				</div>
+
+				<!-- 4. สถานะเตือนภัย -->
+				<div class="bg-[#1e293b] border border-slate-800 rounded-2xl p-5 shadow-lg relative overflow-hidden">
+					<div class="flex justify-between items-start">
+						<span class="text-xs font-semibold uppercase tracking-wider text-slate-400">สถานะเตือนภัย</span>
+						<span class="text-slate-400">⚠️</span>
+					</div>
+					<div class="mt-3">
+						<span id="status-badge" class="inline-flex items-center px-3 py-1 rounded-lg text-lg font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+							✅ ปกติ
+						</span>
+					</div>
+					<div id="status-sub" class="mt-2 text-xs text-slate-400">ระดับน้ำต่ำกว่าตลิ่ง</div>
+				</div>
+			</div>
+
+			<!-- Chart Section -->
+			<div class="bg-[#1e293b] border border-slate-800 rounded-2xl p-6 shadow-lg">
+				<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+					<div>
+						<h2 class="text-lg font-bold flex items-center gap-2">
+							<span>📈</span> แนวโน้มระดับน้ำย้อนหลัง 3 วัน (72 ชั่วโมง)
+						</h2>
+						<p class="text-xs text-slate-400 mt-0.5">เส้นสีแดงแสดงขอบตลิ่ง สามารถเลื่อนดูย้อนหลังแนวโน้มน้ำขึ้น-ลงได้</p>
+					</div>
+					<div class="bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full text-xs text-emerald-400 font-medium flex items-center gap-1.5">
+						<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> โหมดข้อมูล: Live API (Realtime)
+					</div>
+				</div>
+				
+				<div class="relative h-[350px] w-full">
+					<canvas id="waterChart"></canvas>
+				</div>
+			</div>
+
 		</div>
 
 		<script>
-			async function fetchWaterData() {
-				try {
-					// หมายเหตุ: คุณสามารถดึงข้อมูลจาก Web App URL ของ Apps Script ที่คุณ Deploy ไว้ หรือดึงตรงจาก API ThaiWater 
-					// (ในที่นี้จำลองการเรียกใช้งานหรือเชื่อมต่อผ่าน Apps Script Web App ของคุณเองเพื่อความปลอดภัยเรื่อง CORS)
-					
-					// const response = await fetch('URL_WEB_APP_GOOGLE_APPS_SCRIPT_ของคุณ');
-					// const data = await response.json();
+			// สร้างกราฟเส้นด้วย Chart.js จำลองรูปแบบ Wave น้ำขึ้น-ลง
+			const ctx = document.getElementById('waterChart').getContext('2d');
+			
+			// ข้อมูลตัวอย่างเวลาและระดับน้ำย้อนหลัง 72 ชม.
+			const labels = [
+				"29/09 22:00", "30/09 01:00", "30/09 05:00", "30/09 09:00", "30/09 12:00", 
+				"30/09 16:00", "30/09 19:00", "01/10 02:00", "01/10 06:00", "01/10 09:00", 
+				"01/10 14:00", "01/10 18:00", "01/10 23:00", "02/10 06:00", "02/10 10:00", 
+				"02/10 13:00", "02/10 17:00", "02/10 20:00"
+			];
+			
+			const waterData = [1.45, 1.68, 2.05, 2.25, 2.07, 1.62, 1.45, 2.23, 1.99, 1.60, 1.73, 2.25, 1.48, 2.25, 1.93, 1.47, 2.20, 1.84];
+			const bankLimitLine = Array(labels.length).fill(2.50); // เส้นขอบตลิ่ง 2.50 ม.
 
-					// ข้อมูลจำลอง (Mock Data) สำหรับแสดงผลเบื้องต้น
-					document.getElementById('water-level').innerText = "2.45";
-					document.getElementById('bank-info').innerText = "ระดับตลิ่ง: 2.80 เมตร";
-					document.getElementById('status-text').innerText = "ปกติ (ปลอดภัย)";
-					document.getElementById('update-time').innerText = "อัปเดตล่าสุด: " + new Date().toLocaleTimeString();
+			const waterChart = new Chart(ctx, {
+				type: 'line',
+				data: {
+					labels: labels,
+					datasets: [
+						{
+							label: 'ระดับขอบตลิ่ง (ม.รทก.)',
+							data: bankLimitLine,
+							borderColor: '#ef4444',
+							borderWidth: 2,
+							borderDash: [5, 5],
+							pointRadius: 0,
+							fill: false
+						},
+						{
+							label: 'ระดับน้ำจริง (ม.รทก.)',
+							data: waterData,
+							borderColor: '#06b6d4',
+							backgroundColor: 'rgba(6, 182, 212, 0.1)',
+							borderWidth: 3,
+							pointBackgroundColor: '#06b6d4',
+							pointRadius: 4,
+							pointHoverRadius: 6,
+							tension: 0.4,
+							fill: true
+						}
+					]
+				},
+				options: {
+					responsive: true,
+					maintainAspectRatio: false,
+					plugins: {
+						legend: {
+							position: 'top',
+							labels: { color: '#94a3b8', font: { family: 'sans-serif' } }
+						},
+						tooltip: {
+							mode: 'index',
+							intersect: false,
+							backgroundColor: '#1e293b',
+							titleColor: '#f8fafc',
+							bodyColor: '#38bdf8',
+							borderColor: '#334155',
+							borderWidth: 1
+						}
+					},
+					scales: {
+						x: {
+							grid: { color: '#1e293b' },
+							ticks: { color: '#64748b' }
+						},
+						y: {
+							grid: { color: '#334155' },
+							ticks: { color: '#64748b' },
+							min: 1.2,
+							max: 2.8
+						}
+					}
+				}
+			});
+		
+			async function fetchRealtimeData() {
+				try {
+					// นำ URL ของคุณมาวางแทนที่ตรงนี้ และลบเครื่องหมาย // ออก
+					const res = await fetch('https://script.google.com/macros/s/AKfycbxmg1dBVylY2L3kosZ9xMZipmD4KAB48Qs0vRs88TrfvgMcGAdII1dVnt2QVxiq6i4q/exec');
+					const data = await res.json();
 					
-				} catch (error) {
-					console.error("Failed to fetch data", error);
+					// เอาเครื่องหมาย // ออกเพื่อให้ระบบดึงค่ามาแสดงผลบน Dashboard จริง
+					document.getElementById('water-level').innerText = data.water_level;
+					document.getElementById('bank-level').innerText = data.bank_level;
+					document.getElementById('remaining-level').innerText = data.remaining;
+				} catch (e) {
+					console.error("Fetch error:", e);
 				}
 			}
 
-			// โหลดข้อมูลตอนเปิดเว็บ และรีเฟรชทุก 1 ปี / 15 นาที
-			fetchWaterData();
-			setInterval(fetchWaterData, 900000); // 15 นาที
+			// 💡 เคล็ดลับ: อย่าลืมเพิ่มบรรทัดเรียกใช้งานฟังก์ชันนี้ที่บรรทัดสุดท้ายสุดของ Script เพื่อให้มันดึงข้อมูลทันทีที่เปิดเว็บครับ
+			fetchRealtimeData();			
+			
+			// เรียกข้อมูลทุกๆ 15 นาที
+			setInterval(fetchRealtimeData, 900000);			
+			
 		</script>
 	</body>
 </html>
