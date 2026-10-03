@@ -19,7 +19,7 @@
 						<span class="text-sky-400">💧</span>
 					</div>
 					<div class="mt-3 flex items-baseline">
-						<span id="water-level" class="text-4xl font-black text-sky-400">1.85</span>
+						<span id="water-level" class="text-4xl font-black text-sky-400">--</span>
 						<span class="ml-1.5 text-lg font-medium text-slate-300">ม.</span>
 					</div>
 					<div id="update-time" class="mt-2 text-xs text-slate-400">หน่วย: ม.รทก.</div>
@@ -32,7 +32,7 @@
 						<span class="text-amber-400">🏛</span>
 					</div>
 					<div class="mt-3 flex items-baseline">
-						<span id="bank-level" class="text-4xl font-black text-amber-400">2.50</span>
+						<span id="bank-level" class="text-4xl font-black text-amber-400">--</span>
 						<span class="ml-1.5 text-lg font-medium text-slate-300">ม.</span>
 					</div>
 					<div class="mt-2 text-xs text-slate-400">เกณฑ์ล้นตลิ่ง (ม.รทก.)</div>
@@ -45,10 +45,10 @@
 						<span class="text-emerald-400">↕️</span>
 					</div>
 					<div class="mt-3 flex items-baseline">
-						<span id="remaining-level" class="text-4xl font-black text-emerald-400">0.65</span>
+						<span id="remaining-level" class="text-4xl font-black text-emerald-400">--</span>
 						<span class="ml-1.5 text-lg font-medium text-slate-300">ม.</span>
 					</div>
-					<div id="remaining-desc" class="mt-2 text-xs text-emerald-400 flex items-center">✅ อยู่ในเกณฑ์ปลอดภัย</div>
+					<div id="remaining-desc" class="mt-2 text-xs text-emerald-400 flex items-center">กำลังโหลด...</div>
 				</div>
 
 				<!-- 4. สถานะเตือนภัย -->
@@ -58,11 +58,11 @@
 						<span class="text-slate-400">⚠️</span>
 					</div>
 					<div class="mt-3">
-						<span id="status-badge" class="inline-flex items-center px-3 py-1 rounded-lg text-lg font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-							✅ ปกติ
+						<span id="status-badge" class="inline-flex items-center px-3 py-1 rounded-lg text-lg font-bold bg-slate-500/20 text-slate-300 border border-slate-500/30">
+							กำลังโหลด...
 						</span>
 					</div>
-					<div id="status-sub" class="mt-2 text-xs text-slate-400">ระดับน้ำต่ำกว่าตลิ่ง</div>
+					<div id="status-sub" class="mt-2 text-xs text-slate-400">ตรวจสอบระดับน้ำ</div>
 				</div>
 			</div>
 
@@ -73,7 +73,7 @@
 						<h2 class="text-lg font-bold flex items-center gap-2">
 							<span>📈</span> สถานีบางปะกง - คลังข้อมูลน้ำแห่งชาติ
 						</h2>
-						<p class="text-xs text-slate-400 mt-0.5">แสดงผลข้อมูลระดับน้ำปัจจุบันแบบเรียลไทม์จากระบบ API</p>
+						<p class="text-xs text-slate-400 mt-0.5">แสดงผลข้อมูลระดับน้ำแบบเรียลไทม์และเส้นแนวโน้มจากระบบ API</p>
 					</div>
 					<div class="bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full text-xs text-emerald-400 font-medium flex items-center gap-1.5">
 						<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> โหมดข้อมูล: Live API (Realtime)
@@ -92,16 +92,16 @@
 			const waterChart = new Chart(ctx, {
 				type: 'line',
 				data: {
-					labels: ['ข้อมูลล่าสุด'],
+					labels: [],
 					datasets: [
 						{
 							label: 'ระดับน้ำจริง (ม.รทก.)',
-							data: [1.85],
+							data: [],
 							borderColor: '#06b6d4',
 							backgroundColor: 'rgba(6, 182, 212, 0.1)',
 							borderWidth: 3,
 							pointBackgroundColor: '#06b6d4',
-							pointRadius: 5,
+							pointRadius: 4,
 							tension: 0.4,
 							fill: true
 						}
@@ -112,15 +112,15 @@
 					maintainAspectRatio: false,
 					scales: {
 						x: { grid: { color: '#1e293b' }, ticks: { color: '#64748b' } },
-						y: { grid: { color: '#334155' }, ticks: { color: '#64748b' }, min: 1.0, max: 3.0 }
+						y: { grid: { color: '#334155' }, ticks: { color: '#64748b' } }
 					}
 				}
 			});
 
 			async function fetchRealtimeData() {
 				try {
-					// ⚠️ นำ URL ของ Google Apps Script Web App มาใส่แทนข้อความด้านล่างนี้
-					const res = await fetch('https://script.google.com/macros/s/AKfycbwoN7dreNtAKBGuhSaX_XL4UEV0qcoapn7o9BztG1-YjNOXiT0mLEXVdNLwUM88LYnO/exec');
+					// ⚠️ แทนที่ URL ด้านล่างด้วย Google Apps Script Web App URL ของคุณ
+					const res = await fetch('https://script.google.com/macros/s/AKfycby9zT8fkwC_x8Dt07cJl8JZSYSw11Gh7lezrYdU-YKxMpisBi9HnV5o2dkIEDmzWz7x/exec');
 					const data = await res.json();
 					
 					document.getElementById('water-level').innerText = data.water_level;
@@ -129,7 +129,7 @@
 					document.getElementById('update-time').innerText = "อัปเดตล่าสุด: " + data.updated_at;
 
 					if (parseFloat(data.remaining) <= 0.5) {
-						document.getElementById('status-badge').className = "inline-flex items-center px-3 py-1 rounded-lg text-lg font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30";
+						document.getElementById('status-badgeclassName = "inline-flex items-center px-3 py-1 rounded-lg text-lg font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30";
 						document.getElementById('status-badge').innerText = "⚠️ ใกล้ล้นตลิ่ง";
 						document.getElementById('remaining-desc').className = "mt-2 text-xs text-rose-400 flex items-center";
 						document.getElementById('remaining-desc').innerText = "🚨 ต้องเฝ้าระวังระดับน้ำ";
@@ -140,19 +140,20 @@
 						document.getElementById('remaining-desc').innerText = "✅ อยู่ในเกณฑ์ปลอดภัย";
 					}
 
-					// อัปเดตกราฟ
-					waterChart.data.labels = [data.updated_at];
-					waterChart.data.datasets[0].data = [data.water_level];
-					waterChart.update();
+					// อัปเดตกราฟเส้นแนวโน้ม
+					if (data.chart_labels && data.chart_data) {
+						waterChart.data.labels = data.chart_labels;
+						waterChart.data.datasets[0].data = data.chart_data;
+						waterChart.update();
+					}
 
 				} catch (e) {
 					console.error("Fetch error:", e);
 				}
 			}
 
-			// ดึงข้อมูลทันทีเมื่อเปิดหน้าเว็บ และตั้งเวลาดึงซ้ำทุก 15 นาที
 			fetchRealtimeData();
-			setInterval(fetchRealtimeData, 900000);
+			setInterval(fetchRealtimeData, 900000); // อัปเดตทุก 15 นาที
 		</script>
 	</body>
 </html>
